@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>InforTrampos - Funcionários</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: #e1e5ee;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .top-bar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #2563eb;
+        }
+
+        .login-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .btn-portfolio {
+            background: #78350f;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-portfolio:hover {
+            background: #92400e;
+            transform: scale(0.96);
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: scale(0.96);
+        }
+
+        /* FILTROS PARA FUNCIONÁRIOS */
+        .filters-func-section {
+            background: white;
+            border-radius: 28px;
+            margin: 24px 0;
+            padding: 18px 20px;
+            border: 1px solid #eef2ff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filters-func-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .filter-func-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-func-btn.active {
+            background: #d97706;
+            color: white;
+            border-color: #d97706;
+        }
+
+        .filter-func-btn:hover {
+            background: #eef2ff;
+            border-color: #cbd5e1;
+        }
+
+        .btn-add-funcionario {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .btn-add-funcionario:hover {
+            background: #16a34a;
+            transform: scale(0.97);
+        }
+
+        /* cards duplos */
+        .insights-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .card-insight {
+            background: white;
+            border-radius: 28px;
+            padding: 20px 24px;
+            border: 1px solid #eef2ff;
+        }
+
+        .card-insight h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+        }
+
+        .prof-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .prof-nome {
+            font-weight: 700;
+        }
+
+        .prof-info {
+            font-size: 0.8rem;
+            color: #475569;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+        }
+
+        /* SEÇÃO DE FUNCIONÁRIOS - ESTILO AMARELO */
+        .funcionarios-section {
+            background: #fef3c7;
+            border-radius: 32px;
+            padding: 28px 24px;
+            margin: 32px 0;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.15);
+        }
+
+        .funcionarios-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .funcionarios-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .funcionarios-header .link-empregos {
+            font-size: 0.8rem;
+            background: #fbbf24;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #78350f;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .funcionarios-header .link-empregos:hover {
+            text-decoration: underline;
+        }
+
+        .funcionarios-count {
+            font-size: 0.8rem;
+            background: #fbbf24;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        .funcionarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .funcionario-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            transition: all 0.2s;
+            border: 1px solid #fde68a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .funcionario-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -12px rgba(251, 191, 36, 0.3);
+            border-color: #f59e0b;
+        }
+
+        .funcionario-nome {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #5c2404;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .funcionario-especialidade {
+            font-size: 0.8rem;
+            color: #d97706;
+            background: #fef3c7;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+
+        .funcionario-experiencia {
+            font-size: 0.85rem;
+            color: #475569;
+            background: #f1f5f9;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 8px 0;
+        }
+
+        .funcionario-comentario {
+            font-size: 0.85rem;
+            color: #334155;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 16px;
+            margin: 12px 0;
+            border-left: 3px solid #fbbf24;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .funcionario-comentario::before {
+            content: "“";
+            font-size: 1.2rem;
+            color: #d97706;
+            font-style: normal;
+        }
+
+        .funcionario-comentario::after {
+            content: "”";
+            font-size: 1.2rem;
+            color: #d97706;
+            font-style: normal;
+        }
+
+        .contratar-btn {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 40px;
+            font-weight: 600;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .contratar-btn:hover {
+            background: #b45309;
+            transform: scale(0.98);
+        }
+
+        /* MODAL ADICIONAR FUNCIONÁRIO */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 32px 28px;
+            max-width: 500px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: #475569;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .form-group select {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+            transform: scale(0.97);
+        }
+
+        /* MODAL PORTFÓLIO */
+        .modal-portfolio {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .modal-portfolio.active {
+            display: flex;
+        }
+
+        .modal-portfolio-content {
+            background: white;
+            border-radius: 32px;
+            padding: 32px 28px;
+            max-width: 550px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+
+        .modal-portfolio-content .btn-fechar {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: 0.2s;
+        }
+
+        .modal-portfolio-content .btn-fechar:hover {
+            color: #ef4444;
+            transform: scale(1.1);
+        }
+
+        .modal-portfolio-content h2 {
+            color: #78350f;
+            border-bottom: 2px solid #fbbf24;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .portfolio-item {
+            margin-bottom: 14px;
+        }
+
+        .portfolio-item label {
+            font-weight: 700;
+            color: #475569;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .portfolio-item .valor {
+            font-size: 1rem;
+            color: #1e293b;
+            padding: 4px 0;
+        }
+
+        .portfolio-habilidades {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .portfolio-habilidade-tag {
+            background: #eef2ff;
+            color: #2563eb;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .portfolio-descricao {
+            background: #fefce8;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border-left: 4px solid #fbbf24;
+            font-style: italic;
+            color: #334155;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #64748b;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .mensagem-flutuante {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .mensagem-flutuante.sucesso {
+            background: #22c55e;
+            display: block;
+        }
+
+        .mensagem-flutuante.erro {
+            background: #ef4444;
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        @media (max-width: 780px) {
+            .insights-row {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-area {
+                justify-content: center;
+            }
+
+            .login-area {
+                justify-content: center;
+            }
+
+            .filters-func-section {
+                flex-direction: column;
+            }
+
+            .btn-add-funcionario {
+                width: 100%;
+                text-align: center;
+            }
+
+            .funcionarios-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="container">
+        <div class="navbar">
+            <div class="logo-area">
+                <img src="foto.png" alt="logo" class="logo-img" id="logoImage" onerror="this.style.display='none'">
+                <div class="logo-text">InforTrampos</div>
+                <div class="badge">EMPREGOS · FUNCIONÁRIOS · AVALIAÇÕES</div>
+            </div>
+            <div class="login-area" id="loginArea">
+                <span class="user-email">👤 admin@gmail.com.br</span>
+                <button class="btn-portfolio" id="btnPortfolio">📂 MEU PORTFÓLIO</button>
+                <button class="logout-btn" id="logoutBtn">SAIR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="container">
+    <!-- FILTROS PARA FUNCIONÁRIOS -->
+    <div class="filters-func-section">
+        <div class="filters-func-grid">
+            <button class="filter-func-btn" data-filter-func="especialidade">ESPECIALIDADE ▼</button>
+            <button class="filter-func-btn" data-filter-func="experiencia">EXPERIÊNCIA ▼</button>
+            <button class="filter-func-btn" id="limparFiltrosFunc" style="background:#e2e8f0;">LIMPAR FILTROS</button>
+        </div>
+        <button class="btn-add-funcionario" id="btnAbrirModalFuncionario">➕ ADICIONAR FUNCIONÁRIO</button>
+    </div>
+
+    <!-- Tendências + Profissionais -->
+    <div class="insights-row">
+        <div class="card-insight">
+            <h3>🔥 Tendencias</h3>
+            <div class="profissionais-destaque">
+                <div class="prof-item"><span class="prof-nome">Desenvolvedor FullStack</span>
+                    <div class="prof-info"><span class="tag">+42% vagas</span><span>Home Office</span></div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">Analista de Dados</span>
+                    <div class="prof-info"><span class="tag">Alta demanda</span><span>Remoto</span></div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">Suporte Técnico TI</span>
+                    <div class="prof-info"><span class="tag">Híbrido</span><span>Salário crescente</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-insight">
+            <h3>👥 Profissionais</h3>
+            <div class="profissionais-destaque">
+                <div class="prof-item"><span class="prof-nome">ESPECIALIDADE: Backend Pleno</span>
+                    <div class="prof-info">SETOR: Tecnologia | OUTROS: Inglês avançado</div>
+                    <div class="prof-info">EXPERIÊNCIA: 4 anos | LOCALIDADE: SP | HABILIDADES: Node, Python</div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">ESPECIALIDADE: UX/UI Design</span>
+                    <div class="prof-info">SETOR: Produto | EXPERIÊNCIA: 3 anos | LOCALIDADE: Remoto</div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">ESPECIALIDADE: Dados Jr</span>
+                    <div class="prof-info">SETOR: Analytics | HABILIDADES: SQL, Power BI</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO: FUNCIONÁRIOS DISPONÍVEIS -->
+    <div class="funcionarios-section">
+        <div class="funcionarios-header">
+            <h2>👥 Funcionários Disponíveis</h2>
+            <span class="funcionarios-count" id="funcionariosCount">10 candidatos</span>
+            <a href="MENU.HTML" class="link-empregos">💼 Conferir Empregos</a>
+        </div>
+        <div class="funcionarios-grid" id="funcionariosContainer">
+            <div class="loading">🔄 Carregando funcionários...</div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>Plataforma de empregos, funcionários e avaliações</p>
+    <p>© 2026 InforTrampos conexão entre talentos e empresas</p>
+</footer>
+
+<!-- MODAL ADICIONAR FUNCIONÁRIO -->
+<div class="modal-overlay" id="modalFuncionario">
+    <div class="modal-content">
+        <h2>➕ Adicionar Novo Funcionário</h2>
+        
+        <form id="formFuncionario">
+            <div class="form-group">
+                <label>Nome do Funcionário *</label>
+                <input type="text" id="funcNome" required placeholder="Ex: João Silva">
+            </div>
+            
+            <div class="form-group">
+                <label>Especialidade *</label>
+                <select id="funcEspecialidade" required>
+                    <option value="">Selecione uma especialidade...</option>
+                    <option value="Analista de TI">Analista de TI</option>
+                    <option value="Gerente">Gerente</option>
+                    <option value="Diarista">Diarista</option>
+                    <option value="Suporte Técnico">Suporte Técnico</option>
+                    <option value="Programador">Programador</option>
+                    <option value="Motorista">Motorista</option>
+                    <option value="Estagiário">Estagiário</option>
+                    <option value="Auxiliar Administrativo">Auxiliar Administrativo</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Experiência *</label>
+                <select id="funcExperiencia" required>
+                    <option value="">Selecione a experiência...</option>
+                    <option value="Novato">Novato 🌟</option>
+                    <option value="2 anos">2 anos</option>
+                    <option value="3 anos">3 anos</option>
+                    <option value="4 anos">4 anos</option>
+                    <option value="5 anos">5 anos</option>
+                    <option value="6 anos">6 anos</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Comentário</label>
+                <textarea id="funcComentario" placeholder="Ex: Sou dedicado e tenho facilidade em trabalhar em equipe..."></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="btnFecharModalFunc">Cancelar</button>
+                <button type="submit" class="btn-success">💾 Salvar Funcionário</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL PORTFÓLIO -->
+<div class="modal-portfolio" id="modalPortfolio">
+    <div class="modal-portfolio-content">
+        <button class="btn-fechar" id="btnFecharPortfolio">&times;</button>
+        <h2>📂 Meu Portfólio</h2>
+        
+        <div class="portfolio-item">
+            <label>👤 Nome</label>
+            <div class="valor"><strong>Administrador</strong></div>
+        </div>
+        
+        <div class="portfolio-item">
+            <label>🎯 Especialidade</label>
+            <div class="valor">Desenvolvedor FullStack</div>
+        </div>
+        
+        <div class="portfolio-item">
+            <label>📅 Experiência</label>
+            <div class="valor">8 anos</div>
+        </div>
+        
+        <div class="portfolio-item">
+            <label>💬 Sobre mim</label>
+            <div class="portfolio-descricao">
+                "Profissional com vasta experiência em desenvolvimento de sistemas web, apaixonado por tecnologia e inovação. Liderou equipes de desenvolvimento e implementou soluções escaláveis para grandes empresas."
+            </div>
+        </div>
+        
+        <div class="portfolio-item">
+            <label>⚙️ Habilidades</label>
+            <div class="portfolio-habilidades">
+                <span class="portfolio-habilidade-tag">React</span>
+                <span class="portfolio-habilidade-tag">Node.js</span>
+                <span class="portfolio-habilidade-tag">Python</span>
+                <span class="portfolio-habilidade-tag">AWS</span>
+                <span class="portfolio-habilidade-tag">Docker</span>
+                <span class="portfolio-habilidade-tag">MongoDB</span>
+                <span class="portfolio-habilidade-tag">TypeScript</span>
+                <span class="portfolio-habilidade-tag">CI/CD</span>
+            </div>
+        </div>
+        
+        <div class="portfolio-item">
+            <label>📍 Localização</label>
+            <div class="valor">Hidrolândia-CE</div>
+        </div>
+        
+        <div class="portfolio-item">
+            <label>📧 Contato</label>
+            <div class="valor">admin@gmail.com.br</div>
+        </div>
+    </div>
+</div>
+
+<!-- Mensagem flutuante -->
+<div class="mensagem-flutuante" id="mensagemFlutuante"></div>
+
+<script>
+    // ==============================================
+    // VARIÁVEIS GLOBAIS
+    // ==============================================
+    const URL_SAIR = "menu_sem_login.html";
+    let funcionariosData = [];
+    let filtrosFuncionarios = {
+        especialidade: null,
+        experiencia: null
+    };
+
+    // ==============================================
+    // FUNCIONÁRIOS FIXOS
+    // ==============================================
+    const funcionariosFixos = [
+        { 
+            id: 'fixo1',
+            nome: "Álvaro Silva", 
+            especialidade: "Analista de TI", 
+            experiencia: "4 anos",
+            comentario: "Sou dedicado e tenho facilidade em trabalhar em equipe. Busco uma oportunidade para crescer profissionalmente!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo2',
+            nome: "Mariana Santos", 
+            especialidade: "Gerente", 
+            experiencia: "3 anos",
+            comentario: "Criativa, organizada. Adoro criar experiências que encantam os usuários!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo3',
+            nome: "Carlos Oliveira", 
+            especialidade: "Diarista", 
+            experiencia: "5 anos",
+            comentario: "Foco em qualidade e boas práticas. Trabalho bem sob pressão e adoro desafios técnicos!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo4',
+            nome: "Fernanda Lima", 
+            especialidade: "Suporte Técnico", 
+            experiencia: "2 anos",
+            comentario: "Analítica e curiosa. Adoro transformar dados em insights valiosos para o negócio!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo5',
+            nome: "Ricardo Alves", 
+            especialidade: "Programador", 
+            experiencia: "6 anos",
+            comentario: "Automação é minha paixão! Busco sempre otimizar processos e garantir infraestrutura estável.",
+            isFixo: true
+        },
+        { 
+            id: 'fixo6',
+            nome: "Patrícia Souza", 
+            especialidade: "Gerente", 
+            experiencia: "4 anos",
+            comentario: "Comunicativa e estratégica. Gosto de alinhar expectativas e entregar valor ao cliente.",
+            isFixo: true
+        },
+        { 
+            id: 'fixo7',
+            nome: "Lucas Mendes", 
+            especialidade: "Motorista", 
+            experiencia: "3 anos",
+            comentario: "Calmo e resolutivo. Adoro ajudar pessoas e resolver problemas complexos!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo8',
+            nome: "Amanda Rocha", 
+            especialidade: "Programador", 
+            experiencia: "2 anos",
+            comentario: "Apaixonada por código limpo e design responsivo. Sempre em busca de novas tecnologias!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo9',
+            nome: "João Pedro", 
+            especialidade: "Estagiário", 
+            experiencia: "Novato",
+            comentario: "Recém-formado, cheio de energia e vontade de aprender. Busco minha primeira oportunidade profissional!",
+            isFixo: true
+        },
+        { 
+            id: 'fixo10',
+            nome: "Beatriz Costa", 
+            especialidade: "Auxiliar Administrativo", 
+            experiencia: "Novato",
+            comentario: "Organizada, proativa e com muita disposição para aprender e crescer na empresa!",
+            isFixo: true
+        }
+    ];
+
+    // ==============================================
+    // FUNÇÕES DE FILTRAGEM
+    // ==============================================
+
+    function filtrarFuncionarios() {
+        let todosFuncionarios = [...funcionariosFixos, ...funcionariosData];
+        let funcionariosFiltrados = [...todosFuncionarios];
+
+        if (filtrosFuncionarios.especialidade) {
+            funcionariosFiltrados = funcionariosFiltrados.filter(func =>
+                func.especialidade && func.especialidade.toLowerCase().includes(filtrosFuncionarios.especialidade.toLowerCase())
+            );
+        }
+
+        if (filtrosFuncionarios.experiencia) {
+            if (filtrosFuncionarios.experiencia === "novato") {
+                funcionariosFiltrados = funcionariosFiltrados.filter(func =>
+                    func.experiencia && func.experiencia.toLowerCase() === "novato"
+                );
+            } else {
+                funcionariosFiltrados = funcionariosFiltrados.filter(func => {
+                    if (func.experiencia.toLowerCase() === "novato") return false;
+                    const anos = parseInt(func.experiencia);
+                    const filtroAnos = parseInt(filtrosFuncionarios.experiencia);
+                    return anos >= filtroAnos;
+                });
+            }
+        }
+
+        return funcionariosFiltrados;
+    }
+
+    // ==============================================
+    // FUNÇÕES DE RENDERIZAÇÃO
+    // ==============================================
+
+    function renderizarFuncionarios() {
+        const container = document.getElementById('funcionariosContainer');
+        const funcionariosFiltrados = filtrarFuncionarios();
+
+        if (funcionariosFiltrados.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 24px;">
+                    <p style="color: #64748b;">❌ Nenhum funcionário encontrado</p>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 8px;">Clique em "Adicionar Funcionário" para criar um novo cadastro!</p>
+                </div>
+            `;
+            document.getElementById('funcionariosCount').textContent = '0 candidatos';
+            return;
+        }
+
+        container.innerHTML = '';
+        funcionariosFiltrados.forEach(func => {
+            const card = document.createElement('div');
+            card.className = 'funcionario-card';
+            const isNovato = func.experiencia.toLowerCase() === "novato";
+            
+            card.innerHTML = `
+                <div class="funcionario-nome">👤 ${func.nome}</div>
+                <div>
+                    <span class="funcionario-especialidade">🎯 ${func.especialidade}</span>
+                    <span class="funcionario-experiencia">📅 ${func.experiencia} ${isNovato ? '🌟' : ''}</span>
+                </div>
+                <div class="funcionario-comentario"> ${func.comentario}</div>
+                <button class="contratar-btn" data-funcionario="${func.nome}">📞 CONTRATAR</button>
+            `;
+            container.appendChild(card);
+        });
+
+        document.getElementById('funcionariosCount').textContent = `${funcionariosFiltrados.length} ${funcionariosFiltrados.length === 1 ? 'candidato' : 'candidatos'}`;
+
+        document.querySelectorAll('.contratar-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nome = btn.getAttribute('data-funcionario');
+                alert(`✅ Interesse registrado em contratar: ${nome}\nEntraremos em contato em breve!`);
+            });
+        });
+    }
+
+    // ==============================================
+    // FUNÇÕES DOS FILTROS
+    // ==============================================
+
+    function abrirModalFiltroFuncionarios(tipoFiltro) {
+        const opcoes = {
+            especialidade: ['Analista de TI', 'Gerente', 'Diarista', 'Suporte Técnico', 'Programador', 'Motorista', 'Estagiário', 'Auxiliar Administrativo'],
+            experiencia: ['Novato', '2 anos', '3 anos', '4 anos', '5 anos', '6 anos']
+        };
+
+        const opcoesDisponiveis = opcoes[tipoFiltro] || [];
+        const opcoesHtml = opcoesDisponiveis.map(opcao => {
+            let valorLower;
+            if (tipoFiltro === 'experiencia') {
+                if (opcao === 'Novato') {
+                    valorLower = 'novato';
+                } else {
+                    valorLower = opcao.split(' ')[0];
+                }
+            } else {
+                valorLower = opcao.toLowerCase();
+            }
+            return `<button class="opcao-filtro-func" data-valor="${valorLower}" data-valor-original="${opcao}" style="display: block; width: 100%; padding: 10px; margin: 5px 0; background: #f1f5f9; border: none; border-radius: 40px; cursor: pointer;">${opcao}</button>`;
+        }).join('');
+
+        const modalContent = `
+            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;">
+                <div style="background: white; border-radius: 28px; padding: 24px; max-width: 300px; width: 90%;">
+                    <h3 style="margin-bottom: 16px;">Selecione ${tipoFiltro.toUpperCase()}</h3>
+                    ${opcoesHtml}
+                    <button id="fecharModalFiltroFunc" style="margin-top: 16px; padding: 10px; width: 100%; background: #e2e8f0; border: none; border-radius: 40px; cursor: pointer;">Cancelar</button>
+                </div>
+            </div>
+        `;
+
+        const modalDiv = document.createElement('div');
+        modalDiv.id = 'modalFiltroTempFunc';
+        modalDiv.innerHTML = modalContent;
+        document.body.appendChild(modalDiv);
+
+        document.querySelectorAll('.opcao-filtro-func').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const valor = btn.getAttribute('data-valor');
+                
+                if (tipoFiltro === 'experiencia') {
+                    filtrosFuncionarios[tipoFiltro] = filtrosFuncionarios[tipoFiltro] === valor ? null : valor;
+                } else {
+                    filtrosFuncionarios[tipoFiltro] = filtrosFuncionarios[tipoFiltro] === valor ? null : valor;
+                }
+                
+                atualizarBotoesFiltroFuncionarios();
+                renderizarFuncionarios();
+                modalDiv.remove();
+            });
+        });
+
+        document.getElementById('fecharModalFiltroFunc').addEventListener('click', () => {
+            modalDiv.remove();
+        });
+    }
+
+    function atualizarBotoesFiltroFuncionarios() {
+        const botoes = document.querySelectorAll('.filter-func-btn[data-filter-func]');
+        botoes.forEach(btn => {
+            const tipo = btn.getAttribute('data-filter-func');
+            if (filtrosFuncionarios[tipo]) {
+                btn.classList.add('active');
+                let textoExibido = filtrosFuncionarios[tipo];
+                if (tipo === 'experiencia') {
+                    if (textoExibido === 'novato') {
+                        textoExibido = 'Novato';
+                    } else {
+                        textoExibido = `${filtrosFuncionarios[tipo]} anos+`;
+                    }
+                }
+                btn.textContent = `${tipo.toUpperCase()}: ${textoExibido} ▼`;
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = `${tipo.toUpperCase()} ▼`;
+            }
+        });
+    }
+
+    function limparFiltrosFuncionarios() {
+        filtrosFuncionarios = {
+            especialidade: null,
+            experiencia: null
+        };
+        atualizarBotoesFiltroFuncionarios();
+        renderizarFuncionarios();
+    }
+
+    // ==============================================
+    // FUNÇÕES DE MENSAGEM
+    // ==============================================
+
+    function mostrarMensagem(texto, tipo) {
+        const div = document.getElementById('mensagemFlutuante');
+        div.textContent = texto;
+        div.className = `mensagem-flutuante ${tipo}`;
+        setTimeout(() => {
+            div.className = 'mensagem-flutuante';
+        }, 4000);
+    }
+
+    // ==============================================
+    // EVENTOS DO FORMULÁRIO
+    // ==============================================
+
+    document.getElementById('btnAbrirModalFuncionario').addEventListener('click', () => {
+        document.getElementById('modalFuncionario').classList.add('active');
+    });
+
+    document.getElementById('btnFecharModalFunc').addEventListener('click', () => {
+        document.getElementById('modalFuncionario').classList.remove('active');
+        document.getElementById('formFuncionario').reset();
+    });
+
+    document.getElementById('modalFuncionario').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+            document.getElementById('modalFuncionario').classList.remove('active');
+            document.getElementById('formFuncionario').reset();
+        }
+    });
+
+    document.getElementById('formFuncionario').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const novoFuncionario = {
+            id: 'func_' + Date.now(),
+            nome: document.getElementById('funcNome').value,
+            especialidade: document.getElementById('funcEspecialidade').value,
+            experiencia: document.getElementById('funcExperiencia').value,
+            comentario: document.getElementById('funcComentario').value || 'Sem comentário',
+            isFixo: false
+        };
+
+        if (!novoFuncionario.especialidade) {
+            mostrarMensagem('❌ Por favor, selecione uma especialidade!', 'erro');
+            return;
+        }
+
+        if (!novoFuncionario.experiencia) {
+            mostrarMensagem('❌ Por favor, selecione a experiência!', 'erro');
+            return;
+        }
+
+        funcionariosData.push(novoFuncionario);
+        mostrarMensagem('✅ Funcionário adicionado com sucesso!', 'sucesso');
+        document.getElementById('formFuncionario').reset();
+        document.getElementById('modalFuncionario').classList.remove('active');
+        renderizarFuncionarios();
+    });
+
+    // ==============================================
+    // MODAL PORTFÓLIO
+    // ==============================================
+    document.getElementById('btnPortfolio').addEventListener('click', function() {
+        document.getElementById('modalPortfolio').classList.add('active');
+    });
+
+    document.getElementById('btnFecharPortfolio').addEventListener('click', function() {
+        document.getElementById('modalPortfolio').classList.remove('active');
+    });
+
+    document.getElementById('modalPortfolio').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+
+    // ==============================================
+    // EVENTOS GLOBAIS
+    // ==============================================
+
+    document.querySelectorAll('.filter-func-btn[data-filter-func]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tipo = btn.getAttribute('data-filter-func');
+            abrirModalFiltroFuncionarios(tipo);
+        });
+    });
+
+    document.getElementById('limparFiltrosFunc')?.addEventListener('click', limparFiltrosFuncionarios);
+    document.getElementById('logoutBtn')?.addEventListener('click', function() {
+        window.location.href = URL_SAIR;
+    });
+
+    // ==============================================
+    // INICIALIZAR
+    // ==============================================
+    renderizarFuncionarios();
+</script>
+</body>
+</html>

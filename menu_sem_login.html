@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>InforTrampos - Empregos e Funcionários</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: #e1e5ee;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* cabeçalho */
+        .top-bar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #2563eb;
+        }
+
+        .login-area a {
+            text-decoration: none;
+            background: #1e293b;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .login-area a:hover {
+            background: #0f172a;
+        }
+
+        /* indicador de usuário logado */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #eef2ff;
+            padding: 5px 15px;
+            border-radius: 40px;
+        }
+
+        .user-email {
+            font-size: 0.8rem;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* filtros */
+        .filters-section {
+            background: white;
+            border-radius: 28px;
+            margin: 24px 0;
+            padding: 18px 20px;
+            border: 1px solid #eef2ff;
+        }
+
+        .filters-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .filter-btn:hover {
+            background: #eef2ff;
+            border-color: #cbd5e1;
+        }
+
+        /* cards duplos */
+        .insights-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .card-insight {
+            background: white;
+            border-radius: 28px;
+            padding: 20px 24px;
+            border: 1px solid #eef2ff;
+        }
+
+        .card-insight h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+        }
+
+        .prof-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .prof-nome {
+            font-weight: 700;
+        }
+
+        .prof-info {
+            font-size: 0.8rem;
+            color: #475569;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+        }
+
+        /* seção de vagas (empregos) */
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 24px 0 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .jobs-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .result-count {
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+
+        /* SEÇÃO DE FUNCIONÁRIOS - ESTILO AMARELO REFORMULADO */
+        .funcionarios-section {
+            background: #fef3c7;
+            border-radius: 32px;
+            padding: 28px 24px;
+            margin: 32px 0;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.15);
+        }
+
+        .funcionarios-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .funcionarios-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .funcionarios-header span {
+            font-size: 0.8rem;
+            background: #fbbf24;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        .funcionarios-header a {
+            color: #78350f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .funcionarios-header a:hover {
+            text-decoration: underline;
+        }
+
+        .funcionarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .funcionario-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            transition: all 0.2s;
+            border: 1px solid #fde68a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .funcionario-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -12px rgba(251, 191, 36, 0.3);
+            border-color: #f59e0b;
+        }
+
+        .funcionario-nome {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #5c2404;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .funcionario-especialidade {
+            font-size: 0.8rem;
+            color: #d97706;
+            background: #fef3c7;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+
+        .funcionario-experiencia {
+            font-size: 0.85rem;
+            color: #475569;
+            background: #f1f5f9;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 8px 0;
+        }
+
+        .funcionario-comentario {
+            font-size: 0.85rem;
+            color: #334155;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 16px;
+            margin: 12px 0;
+            border-left: 3px solid #fbbf24;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .funcionario-comentario::before {
+            content: "“";
+            font-size: 1.2rem;
+            color: #d97706;
+            font-style: normal;
+        }
+
+        .funcionario-comentario::after {
+            content: "”";
+            font-size: 1.2rem;
+            color: #d97706;
+            font-style: normal;
+        }
+
+        .contratar-btn {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 40px;
+            font-weight: 600;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .contratar-btn:hover {
+            background: #b45309;
+            transform: scale(0.98);
+        }
+
+        /* cards de vagas normais */
+        .job-card {
+            background: white;
+            border-radius: 24px;
+            padding: 18px;
+            transition: all 0.2s;
+            border: 1px solid #eef2ff;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -12px rgba(0,0,0,0.1);
+        }
+
+        .job-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #0f172a;
+        }
+
+        .job-detail {
+            font-size: 0.75rem;
+            color: #3b82f6;
+            background: #eff6ff;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 12px 0 8px;
+        }
+
+        .stars {
+            color: #fbbf24;
+            letter-spacing: 2px;
+            margin: 8px 0;
+        }
+
+        .curriculo-btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 8px 0;
+            width: 100%;
+            border-radius: 40px;
+            font-weight: 600;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .curriculo-btn:hover {
+            background: #3b82f6;
+        }
+
+        /* avaliações */
+        .reviews-section {
+            background: #fefce8;
+            border-radius: 32px;
+            padding: 28px 24px;
+            margin: 32px 0;
+            border: 1px solid #fde68a;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .review-card {
+            background: white;
+            border-radius: 24px;
+            padding: 18px;
+        }
+
+        .review-name {
+            font-weight: 800;
+        }
+
+        .review-text {
+            font-size: 0.85rem;
+            color: #334155;
+            margin: 8px 0;
+        }
+
+        /* modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 400px;
+            width: 90%;
+            border-radius: 48px;
+            padding: 32px 28px;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            margin: 16px 0;
+            padding: 14px 18px;
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .modal-btn {
+            background: #1e293b;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #64748b;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 780px) {
+            .insights-row {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-area {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="container">
+        <div class="navbar">
+            <div class="logo-area">
+                <img src="foto.png" alt="logo" class="logo-img" id="logoImage" onerror="this.style.display='none'">
+                <div class="logo-text">InforTrampos</div>
+                <div class="badge">EMPREGOS · FUNCIONÁRIOS · AVALIAÇÕES</div>
+            </div>
+            <div class="login-area" id="loginArea">
+                <a href="#" id="openLoginBtn">🔑 ACESSAR</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="container">
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="filters-grid">
+            <button class="filter-btn" data-filter="tipo">TIPO ▼</button>
+            <button class="filter-btn" data-filter="carga">CARGA ▼</button>
+            <button class="filter-btn" data-filter="setor">SETOR ▼</button>
+            <button class="filter-btn" data-filter="salario">SALÁRIO ▼</button>
+            <button class="filter-btn" data-filter="especialidade">ESPECIALIDADE ▼</button>
+            <button class="filter-btn" id="limparFiltros" style="background:#e2e8f0;">LIMPAR FILTROS</button>
+        </div>
+    </div>
+
+    <!-- Tendências + Profissionais -->
+    <div class="insights-row">
+        <div class="card-insight">
+            <h3>🔥 Tendencias</h3>
+            <div class="profissionais-destaque">
+                <div class="prof-item"><span class="prof-nome">Desenvolvedor FullStack</span>
+                    <div class="prof-info"><span class="tag">+42% vagas</span><span>Home Office</span></div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">Analista de Dados</span>
+                    <div class="prof-info"><span class="tag">Alta demanda</span><span>Remoto</span></div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">Suporte Técnico TI</span>
+                    <div class="prof-info"><span class="tag">Híbrido</span><span>Salário crescente</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-insight">
+            <h3>👥 Profissionais</h3>
+            <div class="profissionais-destaque">
+                <div class="prof-item"><span class="prof-nome">ESPECIALIDADE: Backend Pleno</span>
+                    <div class="prof-info">SETOR: Tecnologia | OUTROS: Inglês avançado</div>
+                    <div class="prof-info">EXPERIÊNCIA: 4 anos | LOCALIDADE: SP | HABILIDADES: Node, Python</div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">ESPECIALIDADE: UX/UI Design</span>
+                    <div class="prof-info">SETOR: Produto | EXPERIÊNCIA: 3 anos | LOCALIDADE: Remoto</div>
+                </div>
+                <div class="prof-item"><span class="prof-nome">ESPECIALIDADE: Dados Jr</span>
+                    <div class="prof-info">SETOR: Analytics | HABILIDADES: SQL, Power BI</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO: FUNCIONÁRIOS DISPONÍVEIS (REFORMULADA) -->
+    <div class="funcionarios-section">
+        <div class="funcionarios-header">
+            <h2>👥 Funcionários Disponíveis</h2>
+            <span><a href="funcionarios_sem_login.html">Principais Candidatos</a></span>
+        </div>
+        <div class="funcionarios-grid" id="funcionariosContainer">
+            <!-- funcionários serão inseridos via JS -->
+        </div>
+    </div>
+
+    <!-- VAGAS EM DESTAQUE (Empregos) -->
+    <div class="jobs-header">
+        <h2>💼 VAGAS EM DESTAQUE</h2>
+        <span class="result-count" id="jobCount">8 oportunidades</span>
+    </div>
+    <div class="jobs-grid" id="jobsContainer"></div>
+
+    <!-- Avaliações -->
+    <div class="reviews-section">
+        <h2 style="display: flex; gap: 8px;">⭐ Avaliações de quem já trabalha</h2>
+        <div class="reviews-grid" id="reviewsContainer"></div>
+    </div>
+
+    <!-- Botões -->
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 32px 0;">
+        <button class="curriculo-btn" style="width: auto; padding: 10px 32px; background:#2563eb;"
+            id="acessarFooterBtn">🔐 ACESSAR VAGAS</button>
+        <button class="curriculo-btn" style="width: auto; padding: 10px 32px; background:#1e293b;"
+            id="enviarCurriculoBtn">📄 Enviar currículo</button>
+    </div>
+</main>
+
+<footer>
+    <p>Plataforma de empregos, funcionários e avaliações</p>
+    <p>© 2026 InforTrampos conexão entre talentos e empresas</p>
+</footer>
+
+<!-- Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h2>🔑 LOGIN</h2>
+        <p>ACESSAR SUA CONTA</p>
+        <input type="text" placeholder="E-mail ou usuário" class="modal-input" id="loginEmail">
+        <input type="password" placeholder="Senha" class="modal-input" id="loginPassword">
+        <button class="modal-btn" id="doLoginBtn">ENTRAR</button>
+        <button class="close-modal" id="closeModalBtn"
+            style="margin-top: 16px; background:none; border:none; cursor:pointer;">Fechar</button>
+        <div id="loginMsg" style="margin-top: 12px; font-size:0.8rem; color:#3b82f6;"></div>
+    </div>
+</div>
+
+<script>
+    // ==============================================
+    // CONFIGURAÇÃO DE LOGIN - USUÁRIO ÚNICO
+    // ==============================================
+    
+    const USUARIO_VALIDO = {
+        email: "admin@gmail.com.br",
+        senha: "12345DS3"
+    };
+    
+    const URL_POS_LOGIN = "MENU.HTML";
+    
+    // ==============================================
+    // GERENCIAMENTO DE SESSÃO
+    // ==============================================
+    
+    function isUserLoggedIn() {
+        const usuario = localStorage.getItem('usuarioLogado');
+        if (usuario) {
+            try {
+                const dados = JSON.parse(usuario);
+                return dados.logado === true;
+            } catch(e) {
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    function getLoggedUser() {
+        const usuario = localStorage.getItem('usuarioLogado');
+        if (usuario) {
+            try {
+                return JSON.parse(usuario);
+            } catch(e) {
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    function fazerLogout() {
+        localStorage.removeItem('usuarioLogado');
+        atualizarInterfaceLogin();
+        location.reload();
+    }
+    
+    function atualizarInterfaceLogin() {
+        const loginArea = document.getElementById('loginArea');
+        if (isUserLoggedIn()) {
+            const user = getLoggedUser();
+            loginArea.innerHTML = `
+                <div class="user-info">
+                    <span>👤</span>
+                    <span class="user-email">${user.email}</span>
+                    <button class="logout-btn" id="logoutBtn">SAIR</button>
+                </div>
+            `;
+            document.getElementById('logoutBtn')?.addEventListener('click', fazerLogout);
+        } else {
+            loginArea.innerHTML = `<a href="#" id="openLoginBtn">🔑 ACESSAR</a>`;
+            const newOpenBtn = document.getElementById('openLoginBtn');
+            if (newOpenBtn) {
+                newOpenBtn.addEventListener('click', abrirModal);
+            }
+        }
+    }
+    
+    // ==============================================
+    // DADOS DOS FUNCIONÁRIOS (REFORMULADOS)
+    // ==============================================
+    // Agora com apenas: nome, especialidade, experiencia e comentário
+    const funcionariosLista = [
+        { 
+            nome: "Álvaro Silva", 
+            especialidade: "Analista de TI", 
+            experiencia: "4 anos",
+            comentario: "Sou dedicado e tenho facilidade em trabalhar em equipe. Busco uma oportunidade para crescer profissionalmente!"
+        },
+        { 
+            nome: "Mariana Santos", 
+            especialidade: "Gerente", 
+            experiencia: "3 anos",
+            comentario: "Criativa, organizada. Adoro criar experiências que encantam os usuários!"
+        },
+        { 
+            nome: "Carlos Oliveira", 
+            especialidade: "Diarista", 
+            experiencia: "5 anos",
+            comentario: "Foco em qualidade e boas práticas. Trabalho bem sob pressão e adoro desafios técnicos!"
+        },
+        { 
+            nome: "Fernanda Lima", 
+            especialidade: "Suporte Técnico", 
+            experiencia: "2 anos",
+            comentario: "Analítica e curiosa. Adoro transformar dados em insights valiosos para o negócio!"
+        },
+        { 
+            nome: "Ricardo Alves", 
+            especialidade: "Programador", 
+            experiencia: "6 anos",
+            comentario: "Automação é minha paixão! Busco sempre otimizar processos e garantir infraestrutura estável."
+        },
+        { 
+            nome: "Patrícia Souza", 
+            especialidade: "Gerente", 
+            experiencia: "4 anos",
+            comentario: "Comunicativa e estratégica. Gosto de alinhar expectativas e entregar valor ao cliente."
+        },
+        { 
+            nome: "Lucas Mendes", 
+            especialidade: "Motorista", 
+            experiencia: "3 anos",
+            comentario: "Calmo e resolutivo. Adoro ajudar pessoas e resolver problemas complexos!"
+        },
+        { 
+            nome: "Amanda Rocha", 
+            especialidade: "Programador", 
+            experiencia: "2 anos",
+            comentario: "Apaixonada por código limpo e design responsivo. Sempre em busca de novas tecnologias!"
+        }
+    ];
+
+    // VAGAS DE EMPREGO
+    const trabalhosLista = [
+        { nome: "LOJA DE TI (Gestão)", especialidade: "Coordenação", local: "Precisamos de um profissional que transforme código em soluções incríveis!", carga: "Híbrido", avaliacao: 5, setor: "Tecnologia", tipo: "Gestão", salario: "Alto"},
+        { nome: "LOJA DE TI", especialidade: "Suporte", local: "Precisamos de um profissional para fazer a magia do TI acontecer todos os dias!", carga: "Presencial", avaliacao: 5, setor: "Tecnologia", tipo: "Suporte", salario: "Médio" },
+        { nome: "Moda e Varejo Digital", especialidade: "Atendimento", local: "Precisamos de um profissional que transforme tendências em vendas!", carga: "Híbrido", avaliacao: 5, setor: "Varejo", tipo: "Atendimento", salario: "Médio" },
+        { nome: "Operador de Caixa", especialidade: "Atendimento", local: "Precisamos de um profissional ágil e atencioso para operar nosso caixa!", carga: "Remoto", avaliacao: 4, setor: "Operacional", tipo: "Operador", salario: "Baixo" },
+        { nome: "Recepcionista/Atendente", especialidade: "Atendimento", local: "Precisamos de um profissional que seja a cara da nossa recepção!", carga: "Presencial", avaliacao: 5, setor: "Atendimento", tipo: "Recepção", salario: "Médio" },
+        { nome: "Diarista(Churrascaria)", especialidade: "Suporte", local: "Precisamos de um profissional organizado que faz a diferença nos bastidores!", carga: "Presencial", avaliacao: 4, setor: "Serviços", tipo: "Diarista", salario: "Baixo" },
+        { nome: "Motoboy", especialidade: "Coordenação", local: "Precisamos de um profissional que entregue mais que produtos, entregue confiança!", carga: "Remoto", avaliacao: 5, setor: "Transporte", tipo: "Operador", salario: "Médio" },
+        { nome: "Estágio", especialidade: "Infraestrutura", local: "Precisamos de um profissional que está começando mas já quer fazer a diferença!", carga: "Presencial", avaliacao: 4, setor: "Tecnologia", tipo: "Estágio", salario: "Baixo" }
+    ];
+
+    // AVALIAÇÕES
+    const avaliacoesExtras = [
+        { nome: "José Pereira", trabalho: "LOJA DE TI", comentario: "Ótimo ambiente de trabalho, recomendo!", estrelas: 5 },
+        { nome: "Cláudio Farias", trabalho: "Moda e Varejo Digital", comentario: "Salário justo e benefícios bons", estrelas: 5 },
+        { nome: "Sabrina de Sousa", trabalho: "LOJA DE TI", comentario: "Equipe muito unida e prestativa", estrelas: 5 },
+        { nome: "Pablo Matos", trabalho: "Operador de Caixa", comentario: "Flexibilidade de horários", estrelas: 5 },
+        { nome: "Ana Souza", trabalho: "Analista de TI", comentario: "Poderia melhorar o plano de carreira", estrelas: 4 },
+        { nome: "Carlos Martins", trabalho: "Negócios", comentario: "Empresa inovadora e moderna", estrelas: 5 },
+        { nome: "Álvaro", trabalho: "Analista de TI", comentario: "Poderia melhorar o plano de carreira", estrelas: 4 }
+    ];
+
+    // ==============================================
+    // ESTADO DOS FILTROS
+    // ==============================================
+    let filtrosAtivos = {
+        tipo: null,
+        carga: null,
+        setor: null,
+        salario: null,
+        especialidade: null
+    };
+
+    // ==============================================
+    // FUNÇÕES DE FILTRAGEM
+    // ==============================================
+
+    function filtrarVagas() {
+        let vagasFiltradas = [...trabalhosLista];
+
+        if (filtrosAtivos.setor) {
+            vagasFiltradas = vagasFiltradas.filter(vaga =>
+                vaga.setor && vaga.setor.toLowerCase().includes(filtrosAtivos.setor.toLowerCase())
+            );
+        }
+
+        if (filtrosAtivos.tipo) {
+            vagasFiltradas = vagasFiltradas.filter(vaga =>
+                vaga.tipo && vaga.tipo.toLowerCase().includes(filtrosAtivos.tipo.toLowerCase())
+            );
+        }
+
+        if (filtrosAtivos.carga) {
+            vagasFiltradas = vagasFiltradas.filter(vaga =>
+                vaga.carga && vaga.carga.toLowerCase() === filtrosAtivos.carga.toLowerCase()
+            );
+        }
+
+        if (filtrosAtivos.salario) {
+            vagasFiltradas = vagasFiltradas.filter(vaga =>
+                vaga.salario && vaga.salario.toLowerCase() === filtrosAtivos.salario.toLowerCase()
+            );
+        }
+
+        if (filtrosAtivos.especialidade) {
+            vagasFiltradas = vagasFiltradas.filter(vaga =>
+                vaga.especialidade && vaga.especialidade.toLowerCase().includes(filtrosAtivos.especialidade.toLowerCase())
+            );
+        }
+
+        return vagasFiltradas;
+    }
+
+    function atualizarContadorVagas(quantidade) {
+        const contador = document.getElementById('jobCount');
+        if (contador) {
+            contador.textContent = `${quantidade} ${quantidade === 1 ? 'oportunidade' : 'oportunidades'}`;
+        }
+    }
+
+    // ==============================================
+    // FUNÇÕES DE RENDERIZAÇÃO
+    // ==============================================
+
+    // NOVA FUNÇÃO PARA RENDERIZAR FUNCIONÁRIOS (APENAS ESPECIALIDADE E EXPERIÊNCIA + COMENTÁRIO)
+    function renderizarFuncionarios() {
+        const container = document.getElementById('funcionariosContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        funcionariosLista.forEach(func => {
+            const card = document.createElement('div');
+            card.className = 'funcionario-card';
+            card.innerHTML = `
+                <div class="funcionario-nome">👤 ${func.nome}</div>
+                <div>
+                    <span class="funcionario-especialidade">🎯 ${func.especialidade}</span>
+                    <span class="funcionario-experiencia">📅 ${func.experiencia}</span>
+                </div>
+                <div class="funcionario-comentario"> ${func.comentario}</div>
+                <button class="contratar-btn" data-funcionario="${func.nome}">📞 CONTRATAR</button>
+            `;
+            container.appendChild(card);
+        });
+
+        document.querySelectorAll('.contratar-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nome = btn.getAttribute('data-funcionario');
+                
+                if (!isUserLoggedIn()) {
+                    abrirModal();
+                    return;
+                }
+                
+                alert(`✅ Interesse registrado em contratar: ${nome}\nEntraremos em contato em breve!`);
+            });
+        });
+    }
+
+    function renderizarJobs() {
+        const container = document.getElementById('jobsContainer');
+        const vagasFiltradas = filtrarVagas();
+
+        container.innerHTML = '';
+        
+        if (vagasFiltradas.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 24px;">
+                    <p>❌ Nenhuma vaga encontrada com os filtros selecionados.</p>
+                    <button id="limparFiltrosMsg" style="margin-top: 16px; padding: 8px 24px; background: #3b82f6; color: white; border: none; border-radius: 40px; cursor: pointer;">Limpar Filtros</button>
+                </div>
+            `;
+            const btnLimpar = document.getElementById('limparFiltrosMsg');
+            if (btnLimpar) {
+                btnLimpar.addEventListener('click', limparTodosFiltros);
+            }
+            atualizarContadorVagas(0);
+            return;
+        }
+
+        vagasFiltradas.forEach(job => {
+            const card = document.createElement('div');
+            card.className = 'job-card';
+            card.innerHTML = `
+                <div class="job-title">${job.nome}</div>
+                <div class="job-detail">🎯 ${job.especialidade}</div>
+                <div class="stars">${'★'.repeat(job.avaliacao)}${'☆'.repeat(5 - job.avaliacao)}</div>
+                <div style="font-size:0.75rem; margin: 6px 0;">📍 ${job.local}</div>
+                <div style="font-size:0.7rem; margin: 4px 0; color:#64748b;">🕒 ${job.carga}</div>
+                <button class="curriculo-btn enviar-curriculo" data-vaga="${job.nome}">📄 Enviar currículo</button>
+            `;
+            container.appendChild(card);
+        });
+
+        atualizarContadorVagas(vagasFiltradas.length);
+
+        document.querySelectorAll('.enviar-curriculo').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (!isUserLoggedIn()) {
+                    abrirModal();
+                    return;
+                }
+                const vaga = btn.getAttribute('data-vaga');
+                alert(`✅ Currículo encaminhado para a vaga: ${vaga}`);
+            });
+        });
+    }
+
+    function renderizarReviews() {
+        const container = document.getElementById('reviewsContainer');
+        container.innerHTML = '';
+        avaliacoesExtras.forEach(rev => {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review-card';
+            reviewDiv.innerHTML = `
+                <div class="review-name">👤 ${rev.nome}</div>
+                <div style="font-size:0.7rem; color:#2563eb;">${rev.trabalho}</div>
+                <div class="stars">${'★'.repeat(rev.estrelas)}${'☆'.repeat(5 - rev.estrelas)}</div>
+                <div class="review-text">“${rev.comentario}”</div>
+                <button class="curriculo-btn acessar-avaliacao" style="margin-top: 12px; background:#3b82f6;">⭐ ACESSAR</button>
+            `;
+            container.appendChild(reviewDiv);
+        });
+        document.querySelectorAll('.acessar-avaliacao').forEach(btn => {
+            btn.addEventListener('click', () => {
+                abrirModal();
+            });
+        });
+    }
+
+    // ==============================================
+    // FUNÇÕES DOS FILTROS
+    // ==============================================
+
+    function abrirModalFiltro(tipoFiltro) {
+        const opcoes = {
+            tipo: ['Gestão', 'Suporte', 'Atendimento', 'Operador', 'Recepção', 'Diarista', 'Estágio'],
+            carga: ['Presencial', 'Remoto', 'Híbrido'],
+            setor: ['Tecnologia', 'Varejo', 'Operacional', 'Atendimento', 'Serviços', 'Transporte'],
+            salario: ['Alto', 'Médio', 'Baixo'],
+            especialidade: ['Coordenação', 'Suporte', 'Atendimento', 'Desenvolvimento', 'Analista', 'Infraestrutura']
+        };
+
+        const opcoesDisponiveis = opcoes[tipoFiltro] || [];
+        const opcoesHtml = opcoesDisponiveis.map(opcao => 
+            `<button class="opcao-filtro" data-valor="${opcao.toLowerCase()}" style="display: block; width: 100%; padding: 10px; margin: 5px 0; background: #f1f5f9; border: none; border-radius: 40px; cursor: pointer;">${opcao}</button>`
+        ).join('');
+
+        const modalContent = `
+            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;">
+                <div style="background: white; border-radius: 28px; padding: 24px; max-width: 300px; width: 90%;">
+                    <h3 style="margin-bottom: 16px;">Selecione ${tipoFiltro.toUpperCase()}</h3>
+                    ${opcoesHtml}
+                    <button id="fecharModalFiltro" style="margin-top: 16px; padding: 10px; width: 100%; background: #e2e8f0; border: none; border-radius: 40px; cursor: pointer;">Cancelar</button>
+                </div>
+            </div>
+        `;
+
+        const modalDiv = document.createElement('div');
+        modalDiv.id = 'modalFiltroTemp';
+        modalDiv.innerHTML = modalContent;
+        document.body.appendChild(modalDiv);
+
+        document.querySelectorAll('.opcao-filtro').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const valor = btn.getAttribute('data-valor');
+                filtrosAtivos[tipoFiltro] = filtrosAtivos[tipoFiltro] === valor ? null : valor;
+                atualizarBotoesFiltro();
+                renderizarJobs();
+                modalDiv.remove();
+            });
+        });
+
+        document.getElementById('fecharModalFiltro').addEventListener('click', () => {
+            modalDiv.remove();
+        });
+    }
+
+    function atualizarBotoesFiltro() {
+        const botoes = document.querySelectorAll('.filter-btn[data-filter]');
+        botoes.forEach(btn => {
+            const tipo = btn.getAttribute('data-filter');
+            if (filtrosAtivos[tipo]) {
+                btn.classList.add('active');
+                let textoExibido = filtrosAtivos[tipo];
+                if (textoExibido) {
+                    textoExibido = textoExibido.charAt(0).toUpperCase() + textoExibido.slice(1);
+                }
+                btn.textContent = `${tipo.toUpperCase()}: ${textoExibido} ▼`;
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = `${tipo.toUpperCase()} ▼`;
+            }
+        });
+    }
+
+    function limparTodosFiltros() {
+        filtrosAtivos = {
+            tipo: null,
+            carga: null,
+            setor: null,
+            salario: null,
+            especialidade: null
+        };
+        atualizarBotoesFiltro();
+        renderizarJobs();
+    }
+
+    // ==============================================
+    // FUNÇÃO DE VALIDAÇÃO DE LOGIN
+    // ==============================================
+    function validarLogin(email, senha) {
+        if (!email || !senha) {
+            return { valido: false, mensagem: "❌ Preencha e-mail e senha" };
+        }
+        
+        if (!email.includes('@') || !email.includes('.')) {
+            return { valido: false, mensagem: "❌ E-mail inválido" };
+        }
+        
+        if (email === USUARIO_VALIDO.email && senha === USUARIO_VALIDO.senha) {
+            const dadosUsuario = {
+                email: USUARIO_VALIDO.email,
+                logado: true,
+                dataLogin: new Date().toISOString()
+            };
+            localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+            
+            return { valido: true, mensagem: "✅ Login realizado com sucesso!" };
+        } else {
+            return { valido: false, mensagem: "❌ E-mail ou senha incorretos" };
+        }
+    }
+
+    // ==============================================
+    // MODAL LOGIN
+    // ==============================================
+    const modal = document.getElementById('loginModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const acessarFooter = document.getElementById('acessarFooterBtn');
+    const doLogin = document.getElementById('doLoginBtn');
+    const loginMsgDiv = document.getElementById('loginMsg');
+
+    function abrirModal() {
+        modal.style.display = 'flex';
+        loginMsgDiv.innerHTML = '';
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+    }
+
+    if (acessarFooter) acessarFooter.addEventListener('click', abrirModal);
+    
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        loginMsgDiv.innerHTML = '';
+    });
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            loginMsgDiv.innerHTML = '';
+        }
+    });
+
+    doLogin.addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const senha = document.getElementById('loginPassword').value.trim();
+        
+        const resultado = validarLogin(email, senha);
+        
+        if (!resultado.valido) {
+            loginMsgDiv.innerHTML = resultado.mensagem;
+            return;
+        }
+        
+        loginMsgDiv.innerHTML = resultado.mensagem + " Redirecionando...";
+        
+        setTimeout(() => {
+            window.location.href = URL_POS_LOGIN;
+        }, 1000);
+    });
+
+    document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            doLogin.click();
+        }
+    });
+    
+    document.getElementById('loginEmail').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            doLogin.click();
+        }
+    });
+
+    document.getElementById('enviarCurriculoBtn')?.addEventListener('click', () => {
+        if (!isUserLoggedIn()) {
+            abrirModal();
+            return;
+        }
+        alert("📎 Seu currículo foi enviado para análise!");
+    });
+
+    // ==============================================
+    // EVENTOS DOS FILTROS
+    // ==============================================
+    document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tipo = btn.getAttribute('data-filter');
+            abrirModalFiltro(tipo);
+        });
+    });
+
+    document.getElementById('limparFiltros')?.addEventListener('click', limparTodosFiltros);
+
+    // ==============================================
+    // INICIALIZAR
+    // ==============================================
+    atualizarInterfaceLogin();
+    renderizarFuncionarios();
+    renderizarJobs();
+    renderizarReviews();
+</script>
+</body>
+</html>
